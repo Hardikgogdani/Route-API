@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, {useState} from 'react';
 import axios from "axios";
 import {useHistory} from "react-router";
 import {Row, Col, Card, Form, Input, Button, message} from 'antd';
@@ -18,21 +18,24 @@ const Login = (props) => {
     }
 
     const onLogin = () => {
+        if (loginData.email && loginData.password !== null) {
+            axios.post(`http://localhost:8080/users/login`, loginData)
+                .then(res => {
 
-        axios.post(`http://localhost:8080/users/login`, loginData)
-            .then(res => {
-
-                if (res &&  res.data && res.data._id) {
-                    message.success('You Successfully Loged In');
-                    localStorage.setItem("isActive", res.data.email)
-                    history.push("/dashboard");
-                } else {
-                    message.error('user not found')
-                }
-            })
-            .catch(error => {
-                message.error('please enter valid data')
-            });
+                    if (res && res.data && res.data._id) {
+                        message.success('You Successfully Loged In');
+                        localStorage.setItem("isActive", res.data.email)
+                        history.push("/dashboard");
+                    } else {
+                        message.error('user not found')
+                    }
+                })
+                .catch(error => {
+                    message.error('please enter valid data')
+                });
+        } else {
+            message.error('not found')
+        }
     }
 
     const signUp = () => {
