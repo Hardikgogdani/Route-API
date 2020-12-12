@@ -24,7 +24,7 @@ const Login = (props) => {
 
                     if (res && res.data && res.data._id) {
                         message.success('You Successfully Loged In');
-                        localStorage.setItem("isActive", res.data.email)
+                        localStorage.setItem("token", res.data.email)
                         history.push("/dashboard");
                     } else {
                         message.error('user not found')

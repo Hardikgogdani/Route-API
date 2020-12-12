@@ -134,6 +134,7 @@ const SignUp = (props) => {
                         }
                     );
             } else {
+                userDetail.isActive = true;
                 axios.post('http://localhost:8080/users', userDetail)
                     .then(() => {
                         resetForm()

@@ -1,20 +1,20 @@
 import React, {useState, useEffect} from 'react';
-import {Row, Col, Popconfirm, message} from 'antd';
+import {Row, Col, message} from 'antd';
 import Table from "antd/lib/table";
 import {useHistory} from "react-router";
 import axios from "axios";
 
 const User = (props) => {
     const history = useHistory();
-    const text1 = 'Are you sure to Delete this task?';
+    // const text1 = 'Are you sure to Delete this task?';
 
     const [searchDetail, setSearchDetail] = useState({
         firstName: "",
         lastName: "",
         age: "",
         gender: "",
-        email:"",
-        password:""
+        email: "",
+        password: ""
     });
     const [data, setData] = useState([]);
     const [duplicate, setDuplicate] = useState([]);
@@ -57,12 +57,14 @@ const User = (props) => {
         setData(searchTool)
     }
 
-    const onDelete = (record) => {
-
-        axios.delete(`http://localhost:8080/users/${record}`).then(response => {
-            listData();
-            message.success("successfully deleted")
-        }).catch(error => console.log(error));
+    const onDelete = id => {
+        axios.put(`http://localhost:8080/users/isActive/${id}`, {isActive : false})
+            .then(response => {
+                listData();
+                message.success("successfully deleted")
+            })
+            .catch(error => console.log(error));
+        listData();
     }
 
     const onEdit = (id) => {
@@ -78,6 +80,7 @@ const User = (props) => {
         localStorage.setItem('token', '')
         history.push('/');
     }
+
     const columns = [
         {
             title: 'First Name',
@@ -137,53 +140,58 @@ const User = (props) => {
                     </button>
                     &nbsp; &nbsp;
 
-                    <Popconfirm placement="rightTop" title={text1} onConfirm={() => {
-                        onDelete(record._id)
-                    }} okText="Yes" cancelText="No">
-                        <button className="btn btn-outline-danger btn-mini">
+                    {/*<Popconfirm placement="rightTop" title={text1} */}
+                    {/*}} okText="Yes" cancelText="No">*/}
+                        <button className="btn btn-outline-danger btn-mini" onClick={() => { onDelete(record._id)}}>
                             Delete
                         </button>
-                    </Popconfirm>
+                    {/*</Popconfirm>*/}
                 </div>
             )
         },
-
+        {
+            title: 'IActive',
+            dataIndex: 'isActive',
+            render: (text, record) => (
+                <span>{record.isActive ? "Active" : "Not Active"}</span>
+            )
+        }
     ]
 
 
-    return (
-        <>
+            return (
+            <>
             <h3 id="user-id">Users Detail</h3>
 
 
             <button className="btn-add-new" onClick={addNew}>Add New</button>
 
             <input className="search" value={searchDetail.firstName} name="firstName" placeholder="search firstname"
-                   onChange={handleChange}/>
+            onChange={handleChange}/>
 
 
             <input className="search" value={searchDetail.lastName} name="lastName" placeholder="search lastname"
-                   onChange={handleChange}/>
+            onChange={handleChange}/>
 
             <input className="search" value={searchDetail.age} name="age" placeholder="search age"
-                   onChange={handleChange}/>
+            onChange={handleChange}/>
 
             <input className="search" value={searchDetail.gender} name="gender" placeholder="search gender"
-                   onChange={handleChange}/>
+            onChange={handleChange}/>
             <button onClick={searchResult}>Search</button>
 
             <Row>
-                <Col span={4}/>
-                <Col span={16} className="mt-3">
-                    <Table
-                        columns={columns}
-                        dataSource={data}
-                        pagination={{pageSize: 5}}
-                    />
-                </Col>
+            <Col span={4}/>
+            <Col span={16} className="mt-3">
+            <Table
+            columns={columns}
+            dataSource={data}
+            pagination={{pageSize: 5}}
+            />
+            </Col>
             </Row>
             <button className="btn-log-out" onClick={logout}>Log Out</button>
-        </>
-    );
+            </>
+            );
 }
 export default User;
