@@ -18,23 +18,22 @@ const Login = (props) => {
     }
 
     const onLogin = () => {
-        if (loginData.email && loginData.password !== null) {
-            axios.post(`http://localhost:8080/users/login`, loginData)
+        if(loginData.email && loginData.password !== null) {
+            axios.post('http://localhost:8080/users/login', loginData)
                 .then(res => {
-
-                    if (res && res.data && res.data._id) {
-                        message.success('You Successfully Loged In');
+                    if (res && res.data && res.data._id && res.data.isActive) {
+                        message.success("Successfully login")
                         localStorage.setItem("token", res.data.email)
                         history.push("/dashboard");
                     } else {
-                        message.error('user not found')
+                        message.error("User not Found")
                     }
                 })
-                .catch(error => {
-                    message.error('please enter valid data')
-                });
-        } else {
-            message.error('not found')
+                .catch(err => {
+                    message.error("Please enter valid data..")
+                })
+        }else{
+            message.error("please enter data")
         }
     }
 

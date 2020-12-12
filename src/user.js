@@ -124,11 +124,6 @@ const User = (props) => {
             key: 'gender',
         },
         {
-            title: 'Password',
-            dataIndex: 'password',
-            key: 'password',
-        },
-        {
             title: 'Action',
             dataIndex: 'id',
             render: (text, record) => (
