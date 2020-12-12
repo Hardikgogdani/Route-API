@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import axios from "axios";
 import {useHistory} from "react-router";
 import {Row, Col, Card, Form, Input, Button, message} from 'antd';
@@ -10,8 +10,6 @@ const Login = (props) => {
 
     const history = useHistory();
     const [loginData, setLoginData] = useState({});
-    const [list, setList] = useState([]);
-
 
 
     const handleChange = (event) => {

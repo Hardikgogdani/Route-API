@@ -1,13 +1,13 @@
 import {Route, BrowserRouter, Switch} from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import Signup from "./Signup";
-import Login from "./Login";
-import User from "./User";
+import Signup from "./signup";
+import Login from "./login";
+import User from "./user";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "./Dashboard";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/antd.css';
-import './routeData.css';
+import './App.css';
 
 function App() {
   return (

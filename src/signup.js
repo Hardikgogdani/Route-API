@@ -40,14 +40,17 @@ const SignUp = (props) => {
     }, [props.match.params.id])
 
     const listData = (id) => {
-        axios.get(`http://localhost:8080/users/${id}`)
-            .then(response =>{
-                if(response.data && response.data._id){
-                    setUserDetail(response.data)}
-            })
-            .catch(error =>
-                console.log(error)
-            );
+        if (props.match.params.id !== undefined) {
+            axios.get(`http://localhost:8080/users/${id}`)
+                .then(response =>{
+                    if(response.data && response.data._id){
+                        setUserDetail(response.data)}
+                })
+                .catch(error =>
+                    console.log(error)
+                );
+        }
+
     }
 
     const handleChange = (e) => {
@@ -124,7 +127,7 @@ const SignUp = (props) => {
             return setError(errorObj);
         }
         else {
-            if (props.match.params.id !== null) {
+            if (props.match.params.id !== undefined) {
                 axios.put (`http://localhost:8080/users/${userDetail._id}`,userDetail)
                     .then((res) => {
                             resetForm()

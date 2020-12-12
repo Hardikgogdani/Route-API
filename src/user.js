@@ -71,7 +71,7 @@ const User = (props) => {
     }
 
     const addNew = () => {
-        history.push('/Signup');
+        history.push('/signup');
     }
     const logout = () => {
         message.success('Successfully logout');
