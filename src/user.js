@@ -80,12 +80,6 @@ const User = (props) => {
     }
     const columns = [
         {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-
-        },
-        {
             title: 'First Name',
             dataIndex: 'firstName',
             key: 'firstName',

@@ -9,7 +9,6 @@ import 'antd/dist/antd.css';
 const SignUp = (props) => {
     const history = useHistory();
     const [userDetail, setUserDetail] = useState({});
-    const [data, setData] = useState([]);
     const [error, setError] = React.useState({});
 
     const [items] = useState([
@@ -135,7 +134,6 @@ const SignUp = (props) => {
                         }
                     );
             } else {
-                userDetail.id = data.length + 1;
                 axios.post('http://localhost:8080/users', userDetail)
                     .then(() => {
                         resetForm()
