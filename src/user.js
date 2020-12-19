@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import {Row, Col, message} from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Row, Col, message } from 'antd';
 import Table from "antd/lib/table";
-import {useHistory} from "react-router";
+import { useHistory } from "react-router";
 import axios from "axios";
 
 const User = (props) => {
@@ -24,7 +24,8 @@ const User = (props) => {
     }, [])
 
     const listData = () => {
-        axios.get(`http://localhost:8080/users`)
+        const t = localStorage.getItem('token')
+        axios.get(`http://localhost:8080/users`, { headers: { authorization: t } })
             .then(response => {
                 setData(response.data || [])
                 setDuplicate(response.data)
@@ -35,8 +36,8 @@ const User = (props) => {
     }
 
     const handleChange = e => {
-        const {name, value} = e.target;
-        setSearchDetail({...searchDetail, [name]: value})
+        const { name, value } = e.target;
+        setSearchDetail({ ...searchDetail, [name]: value })
     }
 
     const searchResult = e => {
@@ -58,7 +59,8 @@ const User = (props) => {
     }
 
     const onDelete = id => {
-        axios.put(`http://localhost:8080/users/isActive/${id}`, {isActive : false})
+        const t = localStorage.getItem('token')
+        axios.put(`http://localhost:8080/users/isActive/${id}`, { isActive: false }, { headers: { authorization: t } })
             .then(response => {
                 listData();
                 message.success("successfully deleted")
@@ -101,6 +103,12 @@ const User = (props) => {
 
         },
         {
+            title: 'PhoneNumber',
+            dataIndex: 'phone',
+            key: 'phone',
+
+        },
+        {
             title: 'Address',
             dataIndex: 'address',
             key: 'address',
@@ -128,19 +136,14 @@ const User = (props) => {
             dataIndex: 'id',
             render: (text, record) => (
                 <div>
-                    <button className="btn btn-outline-primary btn-mini" onClick={() => {
-                        onEdit(record._id)
-                    }}>
+                    <button className="btn btn-outline-primary btn-mini" onClick={() => { onEdit(record._id) }}>
                         Edit
                     </button>
                     &nbsp; &nbsp;
 
-                    {/*<Popconfirm placement="rightTop" title={text1} */}
-                    {/*}} okText="Yes" cancelText="No">*/}
-                        <button className="btn btn-outline-danger btn-mini" onClick={() => { onDelete(record._id)}}>
-                            Delete
+                    <button className="btn btn-outline-danger btn-mini" onClick={() => { onDelete(record._id) }}>
+                        Delete
                         </button>
-                    {/*</Popconfirm>*/}
                 </div>
             )
         },
@@ -148,45 +151,45 @@ const User = (props) => {
             title: 'IActive',
             dataIndex: 'isActive',
             render: (text, record) => (
-                <span>{record.isActive ? "Active" : "Not Active"}</span>
+                <span>{record.isActive ? "true" : "false"}</span>
             )
         }
     ]
 
 
-            return (
-            <>
+    return (
+        <>
             <h3 id="user-id">Users Detail</h3>
 
 
             <button className="btn-add-new" onClick={addNew}>Add New</button>
 
             <input className="search" value={searchDetail.firstName} name="firstName" placeholder="search firstname"
-            onChange={handleChange}/>
+                onChange={handleChange} />
 
 
             <input className="search" value={searchDetail.lastName} name="lastName" placeholder="search lastname"
-            onChange={handleChange}/>
+                onChange={handleChange} />
 
             <input className="search" value={searchDetail.age} name="age" placeholder="search age"
-            onChange={handleChange}/>
+                onChange={handleChange} />
 
             <input className="search" value={searchDetail.gender} name="gender" placeholder="search gender"
-            onChange={handleChange}/>
+                onChange={handleChange} />
             <button onClick={searchResult}>Search</button>
 
             <Row>
-            <Col span={4}/>
-            <Col span={16} className="mt-3">
-            <Table
-            columns={columns}
-            dataSource={data}
-            pagination={{pageSize: 5}}
-            />
-            </Col>
+                <Col span={4} />
+                <Col span={16} className="mt-3">
+                    <Table
+                        columns={columns}
+                        dataSource={data}
+                        pagination={{ pageSize: 5 }}
+                    />
+                </Col>
             </Row>
             <button className="btn-log-out" onClick={logout}>Log Out</button>
-            </>
-            );
+        </>
+    );
 }
 export default User;

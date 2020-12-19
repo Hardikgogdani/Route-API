@@ -18,12 +18,12 @@ const Login = (props) => {
     }
 
     const onLogin = () => {
-        if(loginData.email && loginData.password !== null) {
-            axios.post('http://localhost:8080/users/login', loginData)
+            axios.post('http://localhost:8080/auth/login', loginData)
                 .then(res => {
-                    if (res && res.data && res.data._id && res.data.isActive) {
+                    console.log(res)
+                    if (res && res.data && res.data.auth) {
                         message.success("Successfully login")
-                        localStorage.setItem("token", res.data.email)
+                        localStorage.setItem("token",  res.data.token)
                         history.push("/dashboard");
                     } else {
                         message.error("User not Found")
@@ -32,9 +32,6 @@ const Login = (props) => {
                 .catch(err => {
                     message.error("Please enter valid data..")
                 })
-        }else{
-            message.error("please enter data")
-        }
     }
 
     const signUp = () => {

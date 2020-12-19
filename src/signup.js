@@ -1,15 +1,15 @@
-import React, {useState, useEffect} from "react";
-import {useHistory} from "react-router";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router";
 import axios from "axios";
-import {Row, Col, Card, Form, Input, Select, Radio, Checkbox, Button, InputNumber} from "antd";
-import {UserOutlined, MailOutlined, HomeOutlined, FlagOutlined, LockOutlined, MobileOutlined} from "@ant-design/icons";
+import { Row, Col, Card, Form, Input, Select, Radio, Checkbox, Button, InputNumber } from "antd";
+import { UserOutlined, MailOutlined, HomeOutlined, FlagOutlined, LockOutlined, MobileOutlined } from "@ant-design/icons";
 import 'antd/dist/antd.css';
 
 
 const SignUp = (props) => {
     const history = useHistory();
     const [userDetail, setUserDetail] = useState({});
-    const [error, setError] = React.useState({});
+    const [error, setError] = useState({});
 
     const [items] = useState([
         {
@@ -40,10 +40,12 @@ const SignUp = (props) => {
 
     const listData = (id) => {
         if (props.match.params.id !== undefined) {
-            axios.get(`http://localhost:8080/users/${id}`)
-                .then(response =>{
-                    if(response.data && response.data._id){
-                        setUserDetail(response.data)}
+            const t = localStorage.getItem('token') 
+            axios.get(`http://localhost:8080/users/${id}`, { headers: { authorization: t } })
+                .then(response => {
+                    if (response.data && response.data._id) {
+                        setUserDetail(response.data)
+                    }
                 })
                 .catch(error =>
                     console.log(error)
@@ -53,9 +55,9 @@ const SignUp = (props) => {
     }
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
 
-        setUserDetail({...userDetail, [name]: value})
+        setUserDetail({ ...userDetail, [name]: value })
     }
     const validate = (name, value) => {
         const emailRegx = /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/ig;
@@ -127,15 +129,16 @@ const SignUp = (props) => {
         }
         else {
             if (props.match.params.id !== undefined) {
-                axios.put (`http://localhost:8080/users/${userDetail._id}`,userDetail)
+                const t =localStorage.getItem('token')
+                axios.put(`http://localhost:8080/users/${userDetail._id}`, userDetail,{headers: {authorization:t }})
                     .then((res) => {
-                            resetForm()
-                            history.push("/user")
-                        }
+                        resetForm()
+                        history.push("/user")
+                    }
                     );
             } else {
                 userDetail.isActive = true;
-                axios.post('http://localhost:8080/users', userDetail)
+                axios.post('http://localhost:8080/auth/signup', userDetail)
                     .then(() => {
                         resetForm()
                         history.push("/login")
@@ -149,50 +152,50 @@ const SignUp = (props) => {
 
     return (
         <>
-            <Row style={{marginTop: 100}}>
-                <Col span={8}/>
+            <Row style={{ marginTop: 100 }}>
+                <Col span={8} />
                 <Col span={8}>
                     <Card>
-                        <h2 style={{textAlign: "center"}}>Registration Form</h2>
-                        <p style={{textAlign: "center"}}>Creat Your Account</p><br/>
+                        <h2 style={{ textAlign: "center" }}>Registration Form</h2>
+                        <p style={{ textAlign: "center" }}>Creat Your Account</p><br />
                         <Form>
                             <Form.Item>
                                 <Input placeholder="Enter Your firstname" name="firstName" value={userDetail.firstName}
-                                       onChange={handleChange} addonBefore={(<UserOutlined/>)}/>
+                                    onChange={handleChange} addonBefore={(<UserOutlined />)} />
                                 <span className="text-danger">{error.firstName || ""}</span>
                             </Form.Item>
 
                             <Form.Item>
                                 <Input placeholder="Enter Your lastname" name="lastName" value={userDetail.lastName}
-                                       onChange={handleChange} addonBefore={(<UserOutlined/>)}/>
+                                    onChange={handleChange} addonBefore={(<UserOutlined />)} />
                                 <span className="text-danger">{error.lastName || ""}</span>
                             </Form.Item>
 
                             <Form.Item>
                                 <Input placeholder="Enter Your EmailId" name="email" value={userDetail.email}
-                                       onChange={handleChange} addonBefore={<MailOutlined/>}/>
+                                    onChange={handleChange} addonBefore={<MailOutlined />} />
                                 <span className="text-danger">{error.email || ""}</span>
                             </Form.Item>
 
                             <Form.Item>
                                 <Input placeholder="Enter Your Mobile Number" name="phone" value={userDetail.phone}
-                                       onChange={handleChange} addonBefore={<MobileOutlined/>}
-                                       style={{width: '100%'}}/>
+                                    onChange={handleChange} addonBefore={<MobileOutlined />}
+                                    style={{ width: '100%' }} />
                                 <span className="text-danger">{error.phone || ""}</span>
                             </Form.Item>
 
                             <Form.Item>
                                 Age : <InputNumber placeholder="age" name="age"
-                                                   onChange={value => handleChange({target: {name: "age", value}})}
-                                                   value={userDetail.age}/>
+                                    onChange={value => handleChange({ target: { name: "age", value } })}
+                                    value={userDetail.age} />
                                 <span className="text-danger">{error.age || ""}</span>
                             </Form.Item>
 
 
                             <Form.Item>
                                 <Input rows={4} name="address" placeholder="Please Input Your Address!"
-                                       value={userDetail.address}
-                                       onChange={handleChange} addonBefore={<HomeOutlined/>}/>
+                                    value={userDetail.address}
+                                    onChange={handleChange} addonBefore={<HomeOutlined />} />
                                 <span className="text-danger">{error.address || ""}</span>
 
                             </Form.Item>
@@ -205,17 +208,17 @@ const SignUp = (props) => {
                                     value: e.target.value
                                 }
                             })} value={userDetail.gender}>
-                                <Radio value="Male">Male</Radio>
-                                <Radio value="Female">Female</Radio>
-                                <Radio value="Other">Other</Radio>
-                            </Radio.Group>
+                                    <Radio value="Male">Male</Radio>
+                                    <Radio value="Female">Female</Radio>
+                                    <Radio value="Other">Other</Radio>
+                                </Radio.Group>
                                 <span className="text-danger">{error.gender || ""}</span>
                             </Form.Item>
 
-                            <Form.Item label={(<FlagOutlined/>)}>
+                            <Form.Item label={(<FlagOutlined />)}>
                                 <Select
                                     placeholder="Please Select Your Country"
-                                    onChange={value => handleChange({target: {name: "country", value}})}
+                                    onChange={value => handleChange({ target: { name: "country", value } })}
                                     value={userDetail.country}
                                     allowClear
                                 >
@@ -229,14 +232,18 @@ const SignUp = (props) => {
                                 </Select>
                                 <span className="text-danger">{error.country || ""}</span>
                             </Form.Item>
+                            {
+                                props.match.params.id === undefined && (
+                                    <Form.Item>
 
-                            <Form.Item>
+                                        <Input.Password placeholder="Enter Your PassWord" name="password"
+                                            id="password" value={userDetail.password} onChange={handleChange}
+                                            addonBefore={(<LockOutlined />)} />
+                                        <span className="text-danger">{error.password || ""}</span>
+                                    </Form.Item>
+                                )
+                            }
 
-                                <Input.Password placeholder="Enter Your PassWord" name="password"
-                                                value={userDetail.password} onChange={handleChange}
-                                                addonBefore={(<LockOutlined/>)}/>
-                                <span className="text-danger">{error.password || ""}</span>
-                            </Form.Item>
 
                             <Form.Item>
                                 <Checkbox name="checkbox">
@@ -252,7 +259,7 @@ const SignUp = (props) => {
                         </Form>
                     </Card>
                 </Col>
-                <Col span={8}/>
+                <Col span={8} />
             </Row>
         </>
     )
